@@ -164,14 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const excludeVevo = excludeVevoCheckbox.checked;
     displayCount = parseInt(displayCountSelect.value, 10);
 
-    const isOnlyExcludeAutomated =
-      (excludeAutomated || excludeVevo) &&
-      searchInput.value.trim() === '' &&
-      subFilter === 'all' &&
-      viewFilter === 'all' &&
-      sortValue === 'subs-desc' &&
-      countryFilter === 'all';
-
     let filtered = allChannels.filter(ch => {
       const matchSearch = ch.title.toLowerCase().includes(searchValue);
 
@@ -251,15 +243,40 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    if (isOnlyExcludeAutomated) {
-      filtered = filtered.slice(0, displayCount);
+    filtered = filtered.slice(0, displayCount);
+
+    const shouldCalculateDisplayRank = 
+      sortValue === 'subs-desc' || 
+      sortValue === 'views-desc' || 
+      excludeAutomated || 
+      excludeVevo;
+
+    if (shouldCalculateDisplayRank) {
       filtered = filtered.map((ch, index) => ({
         ...ch,
         displayRank: index + 1,
       }));
-    } else {
-      filtered = filtered.slice(0, displayCount);
     }
+
+    if (sortValue === 'views-asc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all' && !excludeAutomated && !excludeVevo) {
+      const tempSorted = [...filtered].sort((a, b) => b.view_num - a.view_num);
+      const viewsDescRankMap = new Map();
+      tempSorted.forEach((ch, index) => {
+        viewsDescRankMap.set(ch.id, index + 1);
+      });
+      
+      filtered = filtered.map(ch => ({
+        ...ch,
+        displayRank: viewsDescRankMap.get(ch.id),
+      }));
+    }
+
+    const shouldShowDisplayRank = 
+      (sortValue === 'subs-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') || 
+      (sortValue === 'views-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
+      (sortValue === 'views-asc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
+      excludeAutomated || 
+      excludeVevo;
 
     displayChannels = filtered;
 
@@ -274,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
               relative group
             `;
 
-      const rank = isOnlyExcludeAutomated
+      const rank = shouldShowDisplayRank && channel.displayRank
         ? channel.displayRank
         : channel.originalRank;
 
@@ -342,15 +359,24 @@ document.addEventListener('DOMContentLoaded', () => {
       country,
     } = ch;
 
-    const isOnlyExcludeAutomated =
-      (excludeAutomatedCheckbox.checked || excludeVevoCheckbox.checked) &&
-      searchInput.value.trim() === '' &&
-      filterSubSelect.value === 'all' &&
-      filterViewsSelect.value === 'all' &&
-      sortSelect.value === 'subs-desc' &&
-      filterCountrySelect.value === 'all';
+    const sortValue = sortSelect.value;
+    const excludeAutomated = excludeAutomatedCheckbox.checked;
+    const excludeVevo = excludeVevoCheckbox.checked;
+    const searchValue = searchInput.value.toLowerCase();
+    const subFilter = filterSubSelect.value;
+    const viewFilter = filterViewsSelect.value;
+    const countryFilter = filterCountrySelect.value;
 
-    const rank = isOnlyExcludeAutomated ? ch.displayRank : ch.originalRank;
+    const shouldShowDisplayRank = 
+      (sortValue === 'subs-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') || 
+      (sortValue === 'views-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
+      (sortValue === 'views-asc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
+      excludeAutomated || 
+      excludeVevo;
+
+    const rank = shouldShowDisplayRank && ch.displayRank
+      ? ch.displayRank
+      : ch.originalRank;
 
     modalHeader.innerHTML = `
             <img
@@ -420,16 +446,25 @@ document.addEventListener('DOMContentLoaded', () => {
       'Profile Picture URL',
     ];
 
-    const rows = displayChannels.map(ch => {
-      const isOnlyExcludeAutomated =
-        (excludeAutomatedCheckbox.checked || excludeVevoCheckbox.checked) &&
-        searchInput.value.trim() === '' &&
-        filterSubSelect.value === 'all' &&
-        filterViewsSelect.value === 'all' &&
-        sortSelect.value === 'subs-desc' &&
-        filterCountrySelect.value === 'all';
+    const sortValue = sortSelect.value;
+    const excludeAutomated = excludeAutomatedCheckbox.checked;
+    const excludeVevo = excludeVevoCheckbox.checked;
+    const searchValue = searchInput.value.toLowerCase();
+    const subFilter = filterSubSelect.value;
+    const viewFilter = filterViewsSelect.value;
+    const countryFilter = filterCountrySelect.value;
 
-      const rank = isOnlyExcludeAutomated ? ch.displayRank : ch.originalRank;
+    const shouldShowDisplayRank = 
+      (sortValue === 'subs-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') || 
+      (sortValue === 'views-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
+      (sortValue === 'views-asc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
+      excludeAutomated || 
+      excludeVevo;
+
+    const rows = displayChannels.map(ch => {
+      const rank = shouldShowDisplayRank && ch.displayRank
+        ? ch.displayRank
+        : ch.originalRank;
 
       return [
         rank,
