@@ -88,7 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchCountryNames() {
     try {
-      const response = await axios.get('https://restcountries.com/v3.1/all');
+      const response = await axios.get(
+        'https://restcountries.com/v3.1/all?fields=cca2,name'
+      );
       const map = {};
       response.data.forEach(country => {
         if (country.cca2) {
@@ -245,10 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filtered = filtered.slice(0, displayCount);
 
-    const shouldCalculateDisplayRank = 
-      sortValue === 'subs-desc' || 
-      sortValue === 'views-desc' || 
-      excludeAutomated || 
+    const shouldCalculateDisplayRank =
+      sortValue === 'subs-desc' ||
+      sortValue === 'views-desc' ||
+      excludeAutomated ||
       excludeVevo;
 
     if (shouldCalculateDisplayRank) {
@@ -258,24 +260,44 @@ document.addEventListener('DOMContentLoaded', () => {
       }));
     }
 
-    if (sortValue === 'views-asc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all' && !excludeAutomated && !excludeVevo) {
+    if (
+      sortValue === 'views-asc' &&
+      searchValue === '' &&
+      subFilter === 'all' &&
+      viewFilter === 'all' &&
+      countryFilter === 'all' &&
+      !excludeAutomated &&
+      !excludeVevo
+    ) {
       const tempSorted = [...filtered].sort((a, b) => b.view_num - a.view_num);
       const viewsDescRankMap = new Map();
       tempSorted.forEach((ch, index) => {
         viewsDescRankMap.set(ch.id, index + 1);
       });
-      
+
       filtered = filtered.map(ch => ({
         ...ch,
         displayRank: viewsDescRankMap.get(ch.id),
       }));
     }
 
-    const shouldShowDisplayRank = 
-      (sortValue === 'subs-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') || 
-      (sortValue === 'views-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
-      (sortValue === 'views-asc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
-      excludeAutomated || 
+    const shouldShowDisplayRank =
+      (sortValue === 'subs-desc' &&
+        searchValue === '' &&
+        subFilter === 'all' &&
+        viewFilter === 'all' &&
+        countryFilter === 'all') ||
+      (sortValue === 'views-desc' &&
+        searchValue === '' &&
+        subFilter === 'all' &&
+        viewFilter === 'all' &&
+        countryFilter === 'all') ||
+      (sortValue === 'views-asc' &&
+        searchValue === '' &&
+        subFilter === 'all' &&
+        viewFilter === 'all' &&
+        countryFilter === 'all') ||
+      excludeAutomated ||
       excludeVevo;
 
     displayChannels = filtered;
@@ -291,9 +313,10 @@ document.addEventListener('DOMContentLoaded', () => {
               relative group
             `;
 
-      const rank = shouldShowDisplayRank && channel.displayRank
-        ? channel.displayRank
-        : channel.originalRank;
+      const rank =
+        shouldShowDisplayRank && channel.displayRank
+          ? channel.displayRank
+          : channel.originalRank;
 
       card.innerHTML = `
               <div class="absolute inset-0 bg-gradient-to-r from-red-600 to-red-800 
@@ -367,16 +390,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewFilter = filterViewsSelect.value;
     const countryFilter = filterCountrySelect.value;
 
-    const shouldShowDisplayRank = 
-      (sortValue === 'subs-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') || 
-      (sortValue === 'views-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
-      (sortValue === 'views-asc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
-      excludeAutomated || 
+    const shouldShowDisplayRank =
+      (sortValue === 'subs-desc' &&
+        searchValue === '' &&
+        subFilter === 'all' &&
+        viewFilter === 'all' &&
+        countryFilter === 'all') ||
+      (sortValue === 'views-desc' &&
+        searchValue === '' &&
+        subFilter === 'all' &&
+        viewFilter === 'all' &&
+        countryFilter === 'all') ||
+      (sortValue === 'views-asc' &&
+        searchValue === '' &&
+        subFilter === 'all' &&
+        viewFilter === 'all' &&
+        countryFilter === 'all') ||
+      excludeAutomated ||
       excludeVevo;
 
-    const rank = shouldShowDisplayRank && ch.displayRank
-      ? ch.displayRank
-      : ch.originalRank;
+    const rank =
+      shouldShowDisplayRank && ch.displayRank
+        ? ch.displayRank
+        : ch.originalRank;
 
     modalHeader.innerHTML = `
             <img
@@ -454,17 +490,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewFilter = filterViewsSelect.value;
     const countryFilter = filterCountrySelect.value;
 
-    const shouldShowDisplayRank = 
-      (sortValue === 'subs-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') || 
-      (sortValue === 'views-desc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
-      (sortValue === 'views-asc' && searchValue === '' && subFilter === 'all' && viewFilter === 'all' && countryFilter === 'all') ||
-      excludeAutomated || 
+    const shouldShowDisplayRank =
+      (sortValue === 'subs-desc' &&
+        searchValue === '' &&
+        subFilter === 'all' &&
+        viewFilter === 'all' &&
+        countryFilter === 'all') ||
+      (sortValue === 'views-desc' &&
+        searchValue === '' &&
+        subFilter === 'all' &&
+        viewFilter === 'all' &&
+        countryFilter === 'all') ||
+      (sortValue === 'views-asc' &&
+        searchValue === '' &&
+        subFilter === 'all' &&
+        viewFilter === 'all' &&
+        countryFilter === 'all') ||
+      excludeAutomated ||
       excludeVevo;
 
     const rows = displayChannels.map(ch => {
-      const rank = shouldShowDisplayRank && ch.displayRank
-        ? ch.displayRank
-        : ch.originalRank;
+      const rank =
+        shouldShowDisplayRank && ch.displayRank
+          ? ch.displayRank
+          : ch.originalRank;
 
       return [
         rank,
