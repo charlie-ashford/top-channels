@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function fetchChannels() {
-    const size = 2050;
+    const size = 1050;
     showLoadingSpinner();
 
     try {
